@@ -14,4 +14,3 @@ depends 'compat_resource'
 
 depends 'java'
 depends 'authbind'
-depends 'archive'
