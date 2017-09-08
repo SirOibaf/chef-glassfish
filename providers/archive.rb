@@ -20,7 +20,7 @@ action :download do
 
   Chef::Log.info "Archive #{new_resource.name} => #{new_resource.target_artifact} Exists? #{archive_exists}"
 
-  unless archive_exists do
+  unless archive_exists
 
     cached_package_filename = nil
     delete_cached_package = true
@@ -63,7 +63,7 @@ action :unzip_and_strip_dir do
     package 'unzip'
     archive_exists = ::File.exists?(new_resource.target_artifact)
 
-    unless archive_exists do
+    unless archive_exists
       # Download the archive from remote
       action_download
 
