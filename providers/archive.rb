@@ -56,7 +56,6 @@ action :download do
       umask new_resource.umask if new_resource.umask
       code "cp #{cached_package_filename} #{new_resource.target_artifact}"
     end
-  end
 end
 
 action :unzip_and_strip_dir do
@@ -65,42 +64,42 @@ action :unzip_and_strip_dir do
 
     unless archive_exists do
     # Download the archive from remote
-    action_download
+      action_download
 
-    # Unzip the archive
-    archive_path = "{new_resource.target_directory}/#{new_resource.local_filename}"
-    temp_dir = "/tmp/install-#{new_resource.name}-#{new_resource.derived_version}"
-    bash 'unzip_package' do
-      not_if { archive_exists }
-      user new_resource.owner
-      group new_resource.group
-      umask new_resource.umask if new_resource.umask
-      code <<-CMD
-        set -e
-        rm -rf #{temp_dir}
-        mkdir #{temp_dir}
-        unzip -q -u -o #{archive_path} -d #{temp_dir}
-        if [ `ls -1 #{temp_dir} |wc -l` -gt 1 ] ; then
-          echo More than one directory found
-          exit 37
-        fi
-        mv #{temp_dir}/*/* #{new_resource.target_artifact} && rm -rf #{temp_dir} && test -d #{new_resource.target_artifact}
-      CMD
-    end
+      # Unzip the archive
+      archive_path = "{new_resource.target_directory}/#{new_resource.local_filename}"
+      temp_dir = "/tmp/install-#{new_resource.name}-#{new_resource.derived_version}"
+      bash 'unzip_package' do
+        not_if { archive_exists }
+        user new_resource.owner
+        group new_resource.group
+        umask new_resource.umask if new_resource.umask
+        code <<-CMD
+          set -e
+          rm -rf #{temp_dir}
+          mkdir #{temp_dir}
+          unzip -q -u -o #{archive_path} -d #{temp_dir}
+          if [ `ls -1 #{temp_dir} |wc -l` -gt 1 ] ; then
+            echo More than one directory found
+            exit 37
+          fi
+          mv #{temp_dir}/*/* #{new_resource.target_artifact} && rm -rf #{temp_dir} && test -d #{new_resource.target_artifact}
+        CMD
+      end
 
-    # Delete the original archive
-    file archive_path do
-      backup false
-      action :delete
-    end
+      # Delete the original archive
+      file archive_path do
+        backup false
+        action :delete
+      end
 
-    # Create the symlink
-    current_directory = "#{new_resource.package_directory}/current"
-    last_version = ::File.exist?(current_directory) ? ::File.readlink(current_directory) : nil
-    link current_directory do
-      to new_resource.target_directory
-      owner new_resource.owner
-      group new_resource.group
+      # Create the symlink
+      current_directory = "#{new_resource.package_directory}/current"
+      last_version = ::File.exist?(current_directory) ? ::File.readlink(current_directory) : nil
+      link current_directory do
+        to new_resource.target_directory
+        owner new_resource.owner
+        group new_resource.group
+      end
     end
-  end
 end
