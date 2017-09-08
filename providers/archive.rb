@@ -68,7 +68,7 @@ action :unzip_and_strip_dir do
     action_download
 
     # Unzip the archive
-    archive_path = "{new_resource.target_directory}/#{{new_resource.local_filename}}"
+    archive_path = "{new_resource.target_directory}/#{new_resource.local_filename}"
     temp_dir = "/tmp/install-#{new_resource.name}-#{new_resource.derived_version}"
     bash 'unzip_package' do
       not_if { archive_exists }
