@@ -56,6 +56,7 @@ action :download do
       umask new_resource.umask if new_resource.umask
       code "cp #{cached_package_filename} #{new_resource.target_artifact}"
     end
+  end
 end
 
 action :unzip_and_strip_dir do
@@ -63,7 +64,7 @@ action :unzip_and_strip_dir do
     archive_exists = ::File.exists?(new_resource.target_artifact)
 
     unless archive_exists do
-    # Download the archive from remote
+      # Download the archive from remote
       action_download
 
       # Unzip the archive
