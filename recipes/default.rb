@@ -65,7 +65,7 @@ a = glassfish_archive 'glassfish' do
   version node['glassfish']['version']
   owner node['glassfish']['user']
   group node['glassfish']['group']
-  extract_action 'unzip_and_strip_dir'
+  action 'unzip_and_strip_dir'
 end
 
 exists_at_run_start = ::File.exist?(a.target_directory)
