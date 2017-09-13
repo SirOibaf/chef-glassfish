@@ -15,7 +15,6 @@
 #
 
 action :download do
-  current_directory = "#{new_resource.package_directory}/current"
   archive_exists = ::File.exists?(new_resource.target_artifact)
 
   Chef::Log.info "Archive #{new_resource.name} => #{new_resource.target_artifact} Exists? #{archive_exists}"
@@ -61,14 +60,14 @@ end
 
 action :unzip_and_strip_dir do
     package 'unzip'
-    archive_exists = ::File.exists?(new_resource.target_artifact)
+    archive_exists = ::File.exists?(new_resource.target_directory)
 
     unless archive_exists
       # Download the archive from remote
       action_download
 
       # Unzip the archive
-      archive_path = "{new_resource.target_directory}/#{new_resource.local_filename}"
+      archive_path = new_resource.target_artifact
       temp_dir = "/tmp/install-#{new_resource.name}-#{new_resource.derived_version}"
       bash 'unzip_package' do
         not_if { archive_exists }
@@ -84,7 +83,7 @@ action :unzip_and_strip_dir do
             echo More than one directory found
             exit 37
           fi
-          mv #{temp_dir}/*/* #{new_resource.target_artifact} && rm -rf #{temp_dir} && test -d #{new_resource.target_artifact}
+          mv #{temp_dir}/*/* #{new_resource.target_directory} && rm -rf #{temp_dir} && test -d #{new_resource.target_directory}
         CMD
       end
 

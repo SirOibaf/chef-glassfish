@@ -117,14 +117,10 @@ def target_directory
   "#{package_directory}/#{name}-#{derived_version}"
 end
 
-def target_artifact
-  if 'unzip_and_strip_dir' == extract_action || 'unzip' == extract_action
-    target_directory
-  else
-    "#{target_directory}/#{local_filename}"
-  end
-end
-
 def local_filename
   "#{name}-#{derived_version}#{::File.extname(url)}"
+end
+
+def target_artifact
+  "#{target_directory}/#{local_filename}"
 end
