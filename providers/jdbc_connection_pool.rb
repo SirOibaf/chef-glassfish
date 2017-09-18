@@ -28,7 +28,7 @@ action :create do
   parameters = {:restype => 'res-type',
                 :isolationlevel => 'transaction-isolation-level',
                 :validationmethod => 'connection-validation-method'}
-  Chef::ResourceResolver.resolve(:jdbc_connection_pool).ATTRIBUTES.each do |attr|
+  Chef::ResourceResolver.resolve(:jdbc_connection_pool).new(@new_resource.name).ATTRIBUTES.each do |attr|
     parameters[attr.key] = attr.arg
   end
 
